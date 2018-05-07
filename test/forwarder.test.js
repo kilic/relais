@@ -29,7 +29,7 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
     it('forwards without appending address as first argument', async function () {
 
       let data = selector + pad.address(signer,false) + pad.uint256(value,false)
-      let hsh = await forwarder.messageHash_13(storage.address, data, nonce)
+      let hsh = await forwarder.messageHash_14(storage.address, data, nonce)
       let sig = web3.eth.sign(signer, hsh)
       const { logs } = await forwarder.forward_1(storage.address, data, nonce, sig, { from:relay_1 })
       let _value = await storage.getX()
@@ -42,9 +42,9 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
     it('forwards appending address as first argument', async function () {
 
       let data = selector + pad.uint256(value,false)
-      let hsh = await forwarder.messageHash_13(storage.address, data,nonce)
+      let hsh = await forwarder.messageHash_14(storage.address, data,nonce)
       let sig = web3.eth.sign(signer, hsh)
-      const { logs } = await forwarder.forward_3(storage.address, data, nonce, sig,{ from:relay_1 })
+      const { logs } = await forwarder.forward_4(storage.address, data, nonce, sig,{ from:relay_1 })
       let _value = await storage.getX()
       let _lastSender = await storage.lastSender()
       assert.equal(_value.valueOf(), value)
@@ -55,7 +55,7 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
     it('cannot forward with expired nonce (1)', async function () {
 
       let data = selector + pad.address(signer,false) + pad.uint256(value,false)
-      let hsh = await forwarder.messageHash_13(storage.address, data, nonce)
+      let hsh = await forwarder.messageHash_14(storage.address, data, nonce)
       let sig = web3.eth.sign(signer, hsh)
       await forwarder.forward_1(storage.address, data, nonce, sig, { from:relay_1 })
       await assertRevert(forwarder.forward_1(storage.address, data, nonce, sig, { from:relay_1 }))
@@ -64,10 +64,10 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
     it('cannot forward with expired nonce (3)', async function () {
 
       let data = selector + pad.uint256(value, false)
-      let hsh = await forwarder.messageHash_13(storage.address, data,nonce)
+      let hsh = await forwarder.messageHash_14(storage.address, data,nonce)
       let sig = web3.eth.sign(signer, hsh)
-      await forwarder.forward_3(storage.address, data, nonce, sig,{ from:relay_1 })
-      await assertRevert(forwarder.forward_3(storage.address, data, nonce, sig, { from:relay_1 }))
+      await forwarder.forward_4(storage.address, data, nonce, sig,{ from:relay_1 })
+      await assertRevert(forwarder.forward_4(storage.address, data, nonce, sig, { from:relay_1 }))
     })
 
   })
@@ -93,7 +93,7 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
 
       it('forwards without appending address as first argument', async function () {
 
-        let hsh = await forwarder.messageHash_24(storage.address, data, relay_1 ,timeout, nonce)
+        let hsh = await forwarder.messageHash_25(storage.address, data, relay_1 ,timeout, nonce)
         let sig = web3.eth.sign(signer,hsh)
         const {logs}  = await forwarder.forward_2(storage.address, data, timeout, nonce, sig, { from:relay_1 })
         let _value = await storage.getX()
@@ -106,14 +106,14 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
       it('cannot forward expired order', async function () {
 
         timeout = dates.yesterday(0)
-        let hsh = await forwarder.messageHash_24(storage.address, data, relay_1 ,timeout, nonce)
+        let hsh = await forwarder.messageHash_25(storage.address, data, relay_1 ,timeout, nonce)
         let sig = web3.eth.sign(signer,hsh)
         await assertRevert(forwarder.forward_2(storage.address, data, timeout, nonce, sig, { from:relay_1 }))
       })
 
       it('undesired relayer cannot forward', async function () {
         
-        let hsh = await forwarder.messageHash_24(storage.address, data, relay_1 ,timeout, nonce)
+        let hsh = await forwarder.messageHash_25(storage.address, data, relay_1 ,timeout, nonce)
         let sig = web3.eth.sign(signer, hsh)
         const { logs } = await forwarder.forward_2(storage.address, data, timeout, nonce, sig, { from:relay_2 })
         assert.notEqual(logs[logs.length-1].args.sender, signer)
@@ -121,7 +121,7 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
 
       it('cannot forward with expired nonce ', async function () {
 
-        let hsh = await forwarder.messageHash_24(storage.address, data, relay_1 ,timeout, nonce)
+        let hsh = await forwarder.messageHash_25(storage.address, data, relay_1 ,timeout, nonce)
         let sig = web3.eth.sign(signer,hsh)
         await forwarder.forward_2(storage.address, data, timeout, nonce, sig, { from:relay_1 })
         await assertRevert(forwarder.forward_2(storage.address, data, timeout, nonce, sig, { from:relay_1 }))
@@ -142,9 +142,9 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
 
       it('forwards appending address as first argument', async function () {
         
-        let hsh = await forwarder.messageHash_24(storage.address, data, relay_1 ,timeout, nonce)
+        let hsh = await forwarder.messageHash_25(storage.address, data, relay_1 ,timeout, nonce)
         let sig = web3.eth.sign(signer,hsh)
-        const {logs}  = await forwarder.forward_4(storage.address, data, timeout, nonce, sig, { from:relay_1 })
+        const {logs}  = await forwarder.forward_5(storage.address, data, timeout, nonce, sig, { from:relay_1 })
         let _value = await storage.getX()
         let _lastSender = await storage.lastSender()
         assert.equal(_value.valueOf(),value)
@@ -155,25 +155,25 @@ contract('Forwarder', ([acc0, signer, relay_1, relay_2]) => {
       it('cannot forward expired order', async function () {
 
         timeout = dates.yesterday(0)
-        let hsh = await forwarder.messageHash_24(storage.address, data, relay_1 ,timeout, nonce)
+        let hsh = await forwarder.messageHash_25(storage.address, data, relay_1 ,timeout, nonce)
         let sig = web3.eth.sign(signer,hsh)
-        await assertRevert(forwarder.forward_4(storage.address, data, timeout, nonce, sig, { from:relay_1 }))
+        await assertRevert(forwarder.forward_5(storage.address, data, timeout, nonce, sig, { from:relay_1 }))
       })
 
       it('undesired relayer cannot forward', async function () {
 
-        let hsh = await forwarder.messageHash_24(storage.address, data, relay_1 ,timeout, nonce)
+        let hsh = await forwarder.messageHash_25(storage.address, data, relay_1 ,timeout, nonce)
         let sig = web3.eth.sign(signer, hsh)
-        const { logs } = await forwarder.forward_4(storage.address, data, timeout, nonce, sig, { from:relay_2 })
+        const { logs } = await forwarder.forward_5(storage.address, data, timeout, nonce, sig, { from:relay_2 })
         assert.notEqual(logs[logs.length-1].args.sender, signer)
       })
 
       it('cannot forward with expired nonce ', async function () {
         
-        let hsh = await forwarder.messageHash_24(storage.address, data, relay_1 ,timeout, nonce)
+        let hsh = await forwarder.messageHash_25(storage.address, data, relay_1 ,timeout, nonce)
         let sig = web3.eth.sign(signer,hsh)
-        await forwarder.forward_4(storage.address, data, timeout, nonce, sig, { from:relay_1 })
-        await assertRevert(forwarder.forward_4(storage.address, data, timeout, nonce, sig, { from:relay_1 }))
+        await forwarder.forward_5(storage.address, data, timeout, nonce, sig, { from:relay_1 })
+        await assertRevert(forwarder.forward_5(storage.address, data, timeout, nonce, sig, { from:relay_1 }))
       })
     })
   })

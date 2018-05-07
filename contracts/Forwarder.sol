@@ -12,12 +12,16 @@ contract Forwarder{
   uint constant SELECTOR_SIZE = 4;
   event Forwarded(address sender, address  dst, bytes inputData, bool success);
 
-  function messageHash_13(address dst, bytes data, uint nonce) pure public returns(bytes32){
+  function messageHash_14(address dst, bytes data, uint nonce) pure public returns(bytes32){
     return keccak256(dst, data, nonce);
   }
 
-  function messageHash_24(address dst, bytes data, address relayer, uint timeout, uint nonce) pure public returns(bytes32){
+  function messageHash_25(address dst, bytes data, address relayer, uint timeout, uint nonce) pure public returns(bytes32){
     return keccak256(dst, data, relayer, timeout, nonce);
+  }
+
+  function messageHash_36(address signer, address dst, bytes data, address relayer, uint timeout, uint nonce) pure public returns(bytes32){
+    return keccak256(signer, dst, data, relayer, timeout, nonce);
   }
 
   function forward_1(address dst, bytes data, uint nonce, bytes sig) public { 
